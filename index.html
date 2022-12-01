@@ -142,7 +142,7 @@ function getArea(center){
 			lon: center.lng,
 		}).done(function (data) {
 			console.log(data);
-			$(`#weatherInput`).append(`<div class="row wrap-nowrap mt-2" id="${rorCount}"><div class=" row text-center text-wrap border bg-info m-1 p-1 align-self-center" style="max-width: 75px; font-size: 10px">${data[0].name}, ${data[0].state}</div></div>`);
+			$(`#weatherInput`).append(`<div class=" row text-center text-wrap  m-1 p-1 justify-content-center " style="font-size: 30px"><div class="col-auto border bg-info ">${data[0].name}, ${data[0].state}</div></div><div class="row wrap-nowrap mt-2" id="${rorCount}"></div>`);
 		})
 
 }
