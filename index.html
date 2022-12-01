@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Weather App</title>
+	<script src="js/jquery.js"></script>
+	<script src="js/keys.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+	      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
+</head>
+<body class="bg-secondary">
+
+<div class="container bg-secondary">
+	<div class="row text-center">
+		<h1>Trip Planner</h1>
+	</div>
+	<div class="row text-center">
+		<div class="col">
+			<button type="button" class="btn btn-primary" id="zoomOut">Zoom Out</button>
+		</div>
+		<div class="col align-self-center">
+			<button type="button" class="btn btn-primary" id="zoomIn">Zoom In</button>
+		</div>
+		<div class="col">
+			<button class="btn btn-primary" id="markerRemove">Remove markers</button>
+		</div>
+	</div>
+</div>
+<div class="container bg-secondary">
+	<div class="row justify-content-center">
+		<div class="col">
+			<div class="mt-2 " id='map' style='min-width: 400px; min-height: 300px;'></div>
+		</div>
+	</div>
+
+</div>
+
+<div class="container bg-secondary">
+	<div class="row justify-content-center">
+		<div class="row ">
+			<div class="col text-center mt-3 ">
+				<label for="textInput" class="form-label">Address</label>
+				<input type="text" class="form-control " id="textInput">
+			</div>
+
+		</div>
+		<div class="row mt-3 ">
+			<div class="col text-center">
+				<button class="btn btn-primary" id="submit">Go to address</button>
+			</div>
+			<div class="col text-center">
+				<button class="btn btn-primary" id="PlaceCenter">Place Marker</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+<div class="container-fluid overflow-auto mt-3 bg-success " style="max-height: 50vh" id="weatherInput">
+
+	</div>
+</body>
+<script rel="script" src="js/mapbox-geocoder-utils.js"></script>
+<script id="MAPBOX">
+	let startingZoom = 3;
+	mapboxgl.accessToken = mapboxToken;
+	const map = new mapboxgl.Map({
+		container: 'map', // container ID
+		style: 'mapbox://styles/mapbox/streets-v11', // style URL
+		center: [-97.4574899293861, 39.289328773319056], // starting position [lng, lat]
+		zoom: startingZoom, // starting zoom
+		projection: 'globe' // display the map as a 3D globe
+	});
+	map.on('style.load', () => {
+		map.setFog({}); // Set the default atmosphere style
+	});
+
+	const myToken = mapboxToken;
+
+	let markersArry =[];
+
+
+	let currentMarker = {};
+
+
+	function getCenter(){
+		let center = map.getCenter();
+		geocode(center,myToken).then(function() {
+			let marker = new mapboxgl.Marker()
+				.setLngLat(center)
+				.addTo(map)
+				currentMarker = marker;
+				markersArry.push(marker);
+	});
+		return center;
+	}
+
+	$(`#PlaceCenter`).click(function(){
+
+		getWeather(getCenter());
+		getArea(getCenter());
+	})
+
+	$(`#zoomOut`).click(function(){
+		map.setZoom(startingZoom -= 1);
+	});
+	$(`#zoomIn`).click(function(){
+		map.setZoom(startingZoom += 1);
+	});
+	$(`#submit`).click(function(){
+		let input = $(`#textInput`).val();
+		geocode(input,myToken).then(function(result){
+			map.jumpTo({center: result});
+			map.setZoom(17);
+		});
+	});
+	$(`#markerRemove`).click(function(){
+				markersArry.forEach(function(index) {
+					index.remove();
+					markersArry = [];
+					$( "#weatherInput" ).replaceWith( `<div class="container" id="weatherInput"></div>` );
+					rorCount = 0;
+				});
+	}
+	);
+	$(document).keyup(function(event){
+		if (event.keyCode === 13) {let input = $(`#textInput`).val();
+			geocode(input,myToken).then(function(result){
+				map.jumpTo({center: result});
+				map.setZoom(17);
+			});
+		}});
+
+</script>
+<script id="WEATHER">
+	let rorCount = 0;
+function getArea(center){
+		$.get("http://api.openweathermap.org/geo/1.0/reverse?", {
+			APPID: weatherMapKey,
+			lat: center.lat,
+			lon: center.lng,
+		}).done(function (data) {
+			console.log(data);
+			$(`#weatherInput`).append(`<div class="row wrap-nowrap mt-2" id="${rorCount}"><div class=" col text-center text-wrap border bg-info m-1 p-1 align-self-center" style="max-width: 75px; font-size: 10px">${data[0].name}, ${data[0].state}</div></div>`);
+		})
+
+}
+	function getWeather(center){
+		let weather = {};
+		$.get("http://api.openweathermap.org/data/2.5/forecast?", {
+			APPID: weatherMapKey,
+			lat:    center.lat,
+			lon:    center.lng,
+			units: 'imperial'
+		}).done(function (data) {
+			let maxTemp = 0;
+			let lowTemp = 0;
+			let date = ``;
+			let periodsOfRain = [];
+			let mainWordCounter = [0,0,0,0,0,0];
+			let mainWordArr = [`Clear`,`Cloud`,`Snow`,`Rain`,`Drizzle`,`Thunderstorms`]
+			let tempTime = ``;
+			for (let i = 0; i < data.list.length; i++) {
+				let temp = data.list[i].dt_txt.split(` `);
+				let dateCompare = temp[0];
+				if (i === 0) {
+					date = dateCompare;
+					maxTemp = data.list[i].main.temp_max;
+					lowTemp = data.list[i].main.temp_min;
+				}
+				if (dateCompare !== date || i === (data.list.length-1) ) {
+
+					weather.date = date.slice(5);
+					weather.max = maxTemp;
+					weather.low = lowTemp;
+					weather.rainPeriods = periodsOfRain;
+					const max = Math.max(...mainWordCounter);
+					const index = mainWordCounter.indexOf(max);
+					let word = mainWordArr[index];
+					if (index === 0){
+						word = word + ` Sky's`;
+					}
+					else if (index === 1 || index === 3){
+						word = word + `y`
+					}
+					if (mainWordCounter[3] >= 2 && !mainWordArr[3] && !mainWordArr[4] && !mainWordArr[5]){
+						weather.main = word + ` with periods of rain`;
+					}
+					else {
+						weather.main = word;
+					}
+
+					$(`#${rorCount}`).append(`<div class="col g-1 border bg-light text-center">
+<div class="row p-1 border-bottom m-0">
+<div>${weather.date}</div>
+</div>
+<div class="row p-1 border-bottom m-auto">
+<div>H:${weather.max}F L:${weather.low}F</div>
+</div>
+<div class="row p-1">
+<div>${weather.main}</div>
+</div>
+</div>`)
+
+					weather = {};
+					date = dateCompare;
+					maxTemp = data.list[i].main.temp_max;
+					lowTemp = data.list[i].main.temp_min;
+					periodsOfRain = [];
+					mainWordCounter = [0,0,0,0,0,0];
+				}
+				else {
+					if(data.list[i].main.temp_max > maxTemp){
+						maxTemp = data.list[i].main.temp_max;
+					}
+					if(data.list[i].main.temp_min < lowTemp){
+						lowTemp = data.list[i].main.temp_min;
+					}
+					if (data.list[i].weather[0].main.includes(`Rain`)){
+						tempTime = data.list[i].dt_txt.split(` `);
+						periodsOfRain.push(tempTime[1]);
+					}
+				}
+				if (data.list[i].weather[0].main.includes(mainWordArr[0])){
+					mainWordCounter[0] ++;
+				}
+				else if (data.list[i].weather[0].main.includes(mainWordArr[1])){
+					mainWordCounter[1] ++;
+				}
+				else if (data.list[i].weather[0].main.includes(mainWordArr[2])){
+					mainWordCounter[2] ++;
+				}
+				else if (data.list[i].weather[0].main.includes(mainWordArr[3])){
+					mainWordCounter[3] ++;
+				}
+				else if (data.list[i].weather[0].main.includes(mainWordArr[4])){
+					mainWordCounter[4] ++;
+				}
+				else if (data.list[i].weather[0].main.includes(mainWordArr[5])){
+					mainWordCounter[5] ++;
+				}
+			}
+			$(`#weatherInput`).append(`</div></div>`)
+			rorCount++;
+		});
+	}
+
+
+
+//#TODO :: look at example and get what you need, we now can get what we want
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+        integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+        crossorigin="anonymous"></script>
+
+</html>
