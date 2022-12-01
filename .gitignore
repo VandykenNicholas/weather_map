@@ -1,0 +1,7 @@
+.idea/*
+*.iml
+.DS_STORE
+onMyOwn/*
+help.html
+JS/keys.js
+weather_mapV2.html
