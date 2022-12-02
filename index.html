@@ -10,7 +10,7 @@
 	<script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
 	<link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
 </head>
-<nav class="navbar navbar-expand-lg bg-secondary">
+<nav class="navbar navbar-expand-lg bg-secondary border-bottom border-light">
 	<div class="container-fluid">
 		<a class="navbar-brand fs-3" href="#">Trip Planner</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,11 +22,11 @@
 					<a class="nav-link active" aria-current="page" href="#">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#">Link</a>
+					<a class="nav-link" href="#">Saved Trips</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						Dropdown
+						More Apps!
 					</a>
 					<ul class="dropdown-menu">
 						<li><a class="dropdown-item" href="#">Action</a></li>
@@ -38,58 +38,52 @@
 
 			</ul>
 			<form class="d-flex" role="search">
-				<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-				<button class="btn btn-outline-dark" type="submit">Search</button>
+				<input class="form-control me-2 border border-dark" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-light" type="submit">Search</button>
 			</form>
 		</div>
 	</div>
 </nav>
 <body class="bg-dark">
-
-<div class="container bg-secondary rounded-top mt-4 pt-2 ">
-
+<div class="container bg-secondary rounded-top mt-4 pt-2 border-top border-left border-right border-light ">
 	<div class="row text-center">
 		<div class="col">
-			<button type="button" class="btn bg-dark text-light" id="zoomOut">Zoom Out</button>
+			<button type="button" class="btn bg-dark text-light border" id="zoomOut">Zoom Out</button>
 		</div>
 		<div class="col align-self-center">
-			<button type="button" class="btn bg-dark text-light" id="zoomIn">Zoom In</button>
+			<button type="button" class="btn bg-dark text-light border" id="zoomIn">Zoom In</button>
 		</div>
 		<div class="col">
-			<button class="btn bg-dark text-light" id="markerRemove">Remove markers</button>
+			<button class="btn bg-dark text-light border" id="markerRemove">Remove markers</button>
 		</div>
 	</div>
 </div>
 <div class="container bg-secondary">
 	<div class="row justify-content-center">
 		<div class="col">
-			<div class="mt-2 " id='map' style='min-width: 400px; min-height: 300px;'></div>
+			<div class="mt-2 border border-dark rounded" id='map' style='min-width: 400px; min-height: 300px;'></div>
 		</div>
 	</div>
 
 </div>
-
-<div class="container bg-secondary rounded-bottom">
+<div class="container bg-secondary rounded-bottom border-bottom border-light">
 	<div class="row justify-content-center">
 		<div class="row ">
 			<div class="col text-center mt-3 ">
-				<input type="text" class="form-control " id="textInput" placeholder="Enter an address here">
+				<input type="text" class=" border border-dark form-control " id="textInput" placeholder="Enter an address here">
 			</div>
 			<div class="col-auto text-center align-self-end">
-				<button class="btn bg-dark text-light" id="submit">Go to address</button>
+				<button class="btn border bg-dark text-light" id="submit">Go to address</button>
 			</div>
 		</div>
 		<div class="row mt-3 ">
-
 			<div class="col text-center">
-				<button class="btn bg-dark text-light mb-2" id="PlaceCenter">Place Marker</button>
+				<button class="btn bg-dark text-light mb-2 border" id="PlaceCenter">Place Marker</button>
 			</div>
-
 		</div>
 	</div>
 </div>
-<div class="container-fluid overflow-auto mt-3 border" style="max-height: 50vh" id="weatherInput">
-
+<div class="container overflow-auto mt-3 border fs-4" style="max-height: 50vh" id="weatherInput">
 	</div>
 </body>
 <script rel="script" src="js/main.js"></script>
@@ -100,5 +94,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
         integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
         crossorigin="anonymous"></script>
-
 </html>
