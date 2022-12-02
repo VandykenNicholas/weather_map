@@ -1,4 +1,7 @@
+
+
 let startingZoom = 3;
+const myToken = mapboxToken;
 mapboxgl.accessToken = mapboxToken;
 const map = new mapboxgl.Map({
 	container: 'map', // container ID
@@ -10,8 +13,6 @@ const map = new mapboxgl.Map({
 map.on('style.load', () => {
 	map.setFog({}); // Set the default atmosphere style
 });
-
-const myToken = mapboxToken;
 
 let markersArry =[];
 
@@ -82,7 +83,7 @@ function getArea(center){
 		lon: center.lng,
 	}).done(function (data) {
 		console.log(data);
-		$(`#weatherInput`).append(`<div class=" row text-center text-wrap  m-1 p-1 justify-content-center " style="font-size: 30px"><div class="col-auto border bg-info ">${data[0].name}, ${data[0].state}</div></div><div class="row d-flex justify-content-around wrap-nowrap mt-2" id="${rorCount}"></div>`);
+		$(`#weatherInput`).append(`<div class=" row text-center text-wrap  m-1 p-1 justify-content-center " style="font-size: 30px"><div class="col-auto border bg-dark text-light rounded-pill ">${data[0].name}, ${data[0].state}</div></div><div class="row d-flex justify-content-around wrap-nowrap mt-2" id="${rorCount}"></div>`);
 	})
 	
 }
@@ -131,15 +132,22 @@ function getWeather(center){
 					weather.main = word;
 				}
 				
-				$(`#${rorCount}`).append(`<div class="col-auto g-1 rounded-top bg-light text-center">
+				
+				$(`#${rorCount}`).append(`<div class="col-auto g-1 shadow-lg rounded-top bg-secondary text-center text-light">
 <div class="row p-1 border-bottom m-0">
 <div>${weather.date}</div>
 </div>
 <div class="row p-1 border-bottom m-auto">
-<div>H: ${weather.max}<span>&#176;</span></div>
+<div><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-thermometer-high" viewBox="0 0 16 16">
+  <path d="M9.5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585a1.5 1.5 0 0 1 1 1.415z"/>
+  <path d="M5.5 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM8 1a1.5 1.5 0 0 0-1.5 1.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0l-.166-.15V2.5A1.5 1.5 0 0 0 8 1z"/>
+</svg>: ${weather.max}<span>&#176;</span></div>
 </div>
 <div class="row p-1 border-bottom m-auto">
-<div>L: ${weather.low}<span>&#176;</span></div>
+<div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-snow" viewBox="0 0 16 16">
+  <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V9.5a.5.5 0 0 1 1 0v1.585A1.5 1.5 0 0 1 5 12.5z"/>
+  <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1.293l.646-.647a.5.5 0 0 1 .708.708L9 5.207v1.927l1.669-.963.495-1.85a.5.5 0 1 1 .966.26l-.237.882 1.12-.646a.5.5 0 0 1 .5.866l-1.12.646.884.237a.5.5 0 1 1-.26.966l-1.848-.495L9.5 8l1.669.963 1.849-.495a.5.5 0 1 1 .258.966l-.883.237 1.12.646a.5.5 0 0 1-.5.866l-1.12-.646.237.883a.5.5 0 1 1-.966.258L10.67 9.83 9 8.866v1.927l1.354 1.353a.5.5 0 0 1-.708.708L9 12.207V13.5a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5z"/>
+</svg>: ${weather.low}<span>&#176;</span></div>
 </div>
 <div class="row p-1">
 <div>${weather.main}</div>
