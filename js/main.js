@@ -5,7 +5,7 @@ const myToken = mapboxToken;
 mapboxgl.accessToken = mapboxToken;
 const map = new mapboxgl.Map({
 	container: 'map', // container ID
-	style: 'mapbox://styles/mapbox/streets-v11', // style URL
+	style: 'mapbox://styles/mapbox/navigation-night-v1', // style URL
 	center: [-97.4574899293861, 39.289328773319056], // starting position [lng, lat]
 	zoom: startingZoom, // starting zoom
 	projection: 'globe' // display the map as a 3D globe
@@ -82,7 +82,6 @@ function getArea(center){
 		lat: center.lat,
 		lon: center.lng,
 	}).done(function (data) {
-		console.log(data);
 		$(`#weatherInput`).append(`<div class=" row text-center text-wrap  m-1 p-1 justify-content-center " style="font-size: 30px"><div class="col-auto border bg-dark text-light rounded-pill ">${data[0].name}, ${data[0].state}</div></div><div class="row d-flex justify-content-around wrap-nowrap mt-2" id="${rorCount}"></div>`);
 	})
 	
